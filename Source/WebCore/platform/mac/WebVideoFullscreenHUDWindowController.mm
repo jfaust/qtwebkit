@@ -34,6 +34,9 @@
 #import <wtf/RetainPtr.h>
 #import <wtf/UnusedParam.h>
 
+#import <AppKit/AppKit.h>
+ 
+
 using namespace WebCore;
 using namespace std;
 

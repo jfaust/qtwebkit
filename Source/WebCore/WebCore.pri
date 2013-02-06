@@ -182,15 +182,7 @@ enable?(VIDEO) {
         # We can know the Mac OS version by using the Darwin major version
         DARWIN_VERSION = $$split(QMAKE_HOST.version, ".")
         DARWIN_MAJOR_VERSION = $$first(DARWIN_VERSION)
-        equals(DARWIN_MAJOR_VERSION, "12") {
-            LIBS += $${ROOT_WEBKIT_DIR}/WebKitLibraries/libWebKitSystemInterfaceMountainLion.a
-        } else:equals(DARWIN_MAJOR_VERSION, "11") {
-            LIBS += $${ROOT_WEBKIT_DIR}/WebKitLibraries/libWebKitSystemInterfaceLion.a
-        } else:equals(DARWIN_MAJOR_VERSION, "10") {
-            LIBS += $${ROOT_WEBKIT_DIR}/WebKitLibraries/libWebKitSystemInterfaceSnowLeopard.a
-        } else:equals(DARWIN_MAJOR_VERSION, "9") {
-            LIBS += $${ROOT_WEBKIT_DIR}/WebKitLibraries/libWebKitSystemInterfaceLeopard.a
-        }
+        LIBS += $${ROOT_WEBKIT_DIR}/WebKitLibraries/libWebKitSystemInterfaceSnowLeopard.a
     } else:use?(GSTREAMER) {
         INCLUDEPATH += $$SOURCE_DIR/platform/graphics/gstreamer
     } else:use?(QT_MULTIMEDIA) {
