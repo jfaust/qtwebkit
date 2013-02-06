@@ -196,11 +196,8 @@ int windowsKeyCodeForKeyEvent(unsigned int keycode, bool isKeypad)
             return VK_INSERT; // (2D) INS key
         case Qt::Key_Delete:
             return VK_DELETE; // (2E) DEL key
-        default:
-            return 0;
         }
-
-    } else
+    }
 
     switch (keycode) {
     case Qt::Key_Backspace:

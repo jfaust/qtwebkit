@@ -199,6 +199,7 @@ QWebPagePrivate::QWebPagePrivate(QWebPage *qq)
     , inspector(0)
     , inspectorIsInternalOnly(false)
     , m_lastDropAction(Qt::IgnoreAction)
+    , mouseDown(false)
 {
     WebKit::initializeWebKitWidgets();
     initializeWebCorePage();
@@ -2541,6 +2542,7 @@ bool QWebPage::event(QEvent *ev)
         d->shortcutOverrideEvent(static_cast<QKeyEvent*>(ev));
         break;
     case QEvent::Leave:
+    case QEvent::GraphicsSceneHoverLeave:
         d->leaveEvent(ev);
         break;
     case QEvent::TouchBegin:

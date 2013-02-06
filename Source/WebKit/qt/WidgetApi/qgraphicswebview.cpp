@@ -916,7 +916,9 @@ void QGraphicsWebView::hoverMoveEvent(QGraphicsSceneHoverEvent* ev)
 */
 void QGraphicsWebView::hoverLeaveEvent(QGraphicsSceneHoverEvent* ev)
 {
-    Q_UNUSED(ev);
+    if (d->page) {
+        d->page->event(ev);
+    }
 }
 
 /*! \reimp

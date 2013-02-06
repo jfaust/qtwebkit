@@ -1454,6 +1454,8 @@ QtConnectionObject::QtConnectionObject(JSContextRef context, PassRefPtr<QtInstan
     if (m_receiver)
         JSValueProtect(m_context, m_receiver);
     JSValueProtect(m_context, m_receiverFunction);
+
+    connect(senderInstance->getObject(), SIGNAL(destroyed(QObject*)), SLOT(deleteLater()));
 }
 
 QtConnectionObject::~QtConnectionObject()
