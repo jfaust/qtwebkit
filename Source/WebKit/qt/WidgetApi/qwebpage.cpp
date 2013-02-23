@@ -199,7 +199,7 @@ QWebPagePrivate::QWebPagePrivate(QWebPage *qq)
     , inspector(0)
     , inspectorIsInternalOnly(false)
     , m_lastDropAction(Qt::IgnoreAction)
-    , mouseDown(false)
+    , mouseButtonsDown(0)
 {
     WebKit::initializeWebKitWidgets();
     initializeWebCorePage();
@@ -915,8 +915,14 @@ void QWebPagePrivate::leaveEvent(QEvent*)
     // Fake a mouse move event just outside of the widget, since all
     // the interesting mouse-out behavior like invalidating scrollbars
     // is handled by the WebKit event handler's mouseMoved function.
-    QMouseEvent fakeEvent(QEvent::MouseMove, QCursor::pos(), Qt::NoButton, Qt::NoButton, Qt::NoModifier);
-    mouseMoveEvent(&fakeEvent);
+
+    // Only do this if we're not currently dragging though
+    fprintf(stderr, "leave: %d\n", mouseButtonsDown);
+    if (mouseButtonsDown == 0)
+    {
+        QMouseEvent fakeEvent(QEvent::MouseMove, QCursor::pos(), Qt::NoButton, Qt::NoButton, Qt::NoModifier);
+        mouseMoveEvent(&fakeEvent);
+    }
 }
 
 /*!
@@ -2424,20 +2430,25 @@ bool QWebPage::event(QEvent *ev)
         d->timerEvent(static_cast<QTimerEvent*>(ev));
         break;
     case QEvent::MouseMove:
+        d->mouseButtonsDown = static_cast<QMouseEvent*>(ev)->buttons();
         d->mouseMoveEvent(static_cast<QMouseEvent*>(ev));
         break;
     case QEvent::MouseButtonPress:
+        d->mouseButtonsDown = static_cast<QMouseEvent*>(ev)->buttons();
         d->mousePressEvent(static_cast<QMouseEvent*>(ev));
         break;
     case QEvent::MouseButtonDblClick:
+        d->mouseButtonsDown = static_cast<QMouseEvent*>(ev)->buttons();
         d->mouseDoubleClickEvent(static_cast<QMouseEvent*>(ev));
         break;
     case QEvent::MouseButtonRelease:
+        d->mouseButtonsDown = static_cast<QMouseEvent*>(ev)->buttons();
         d->mouseReleaseEvent(static_cast<QMouseEvent*>(ev));
         break;
 #if !defined(QT_NO_GRAPHICSVIEW)
     case QEvent::GraphicsSceneMouseMove: {
         QGraphicsSceneMouseEvent *gsEv = static_cast<QGraphicsSceneMouseEvent*>(ev);
+        d->mouseButtonsDown = gsEv->buttons();
         QMouseEvent dummyEvent(QEvent::MouseMove, gsEv->pos(), gsEv->screenPos(), gsEv->button(), gsEv->buttons(), gsEv->modifiers());
         d->mouseMoveEvent(&dummyEvent);
         ev->setAccepted(dummyEvent.isAccepted());
@@ -2445,6 +2456,7 @@ bool QWebPage::event(QEvent *ev)
     }
     case QEvent::GraphicsSceneMouseRelease: {
         QGraphicsSceneMouseEvent *gsEv = static_cast<QGraphicsSceneMouseEvent*>(ev);
+        d->mouseButtonsDown = gsEv->buttons();
         QMouseEvent dummyEvent(QEvent::MouseButtonRelease, gsEv->pos(), gsEv->screenPos(), gsEv->button(), gsEv->buttons(), gsEv->modifiers());
         d->adjustPointForClicking(&dummyEvent);
         d->mouseReleaseEvent(&dummyEvent);
@@ -2453,6 +2465,7 @@ bool QWebPage::event(QEvent *ev)
     }
     case QEvent::GraphicsSceneMousePress: {
         QGraphicsSceneMouseEvent *gsEv = static_cast<QGraphicsSceneMouseEvent*>(ev);
+        d->mouseButtonsDown = gsEv->buttons();
         QMouseEvent dummyEvent(QEvent::MouseButtonPress, gsEv->pos(), gsEv->screenPos(), gsEv->button(), gsEv->buttons(), gsEv->modifiers());
         d->adjustPointForClicking(&dummyEvent);
         d->mousePressEvent(&dummyEvent);
@@ -2461,6 +2474,7 @@ bool QWebPage::event(QEvent *ev)
     }
     case QEvent::GraphicsSceneMouseDoubleClick: {
         QGraphicsSceneMouseEvent *gsEv = static_cast<QGraphicsSceneMouseEvent*>(ev);
+        d->mouseButtonsDown = gsEv->buttons();
         QMouseEvent dummyEvent(QEvent::MouseButtonDblClick, gsEv->pos(), gsEv->screenPos(), gsEv->button(), gsEv->buttons(), gsEv->modifiers());
         d->adjustPointForClicking(&dummyEvent);
         d->mouseDoubleClickEvent(&dummyEvent);
