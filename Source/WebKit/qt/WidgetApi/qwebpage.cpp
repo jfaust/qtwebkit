@@ -917,7 +917,6 @@ void QWebPagePrivate::leaveEvent(QEvent*)
     // is handled by the WebKit event handler's mouseMoved function.
 
     // Only do this if we're not currently dragging though
-    fprintf(stderr, "leave: %d\n", mouseButtonsDown);
     if (mouseButtonsDown == 0)
     {
         QMouseEvent fakeEvent(QEvent::MouseMove, QCursor::pos(), Qt::NoButton, Qt::NoButton, Qt::NoModifier);
