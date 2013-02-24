@@ -29,6 +29,7 @@
 #include "qgraphicswebview.h"
 #include <QGraphicsProxyWidget>
 #include <QtGui/QStandardItemModel>
+#include <QtCore/QTimer>
 
 namespace WebCore {
 
@@ -124,7 +125,11 @@ void QtFallbackWebPopup::deleteComboBox()
 {
     if (!m_combo)
         return;
-    m_combo->deleteLater();
+
+    // HACK work around QTBUG-29844, where the combobox can be deleted while it's in an event loop
+    // inside its own hidePopup() function.
+    m_combo->hide();
+    QTimer::singleShot(1000, m_combo, SLOT(deleteLater()));
     m_combo = 0;
 }
 
