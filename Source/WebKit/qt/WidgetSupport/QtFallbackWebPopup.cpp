@@ -29,6 +29,8 @@
 #include "qgraphicswebview.h"
 #include <QGraphicsProxyWidget>
 #include <QtGui/QStandardItemModel>
+#include <QtWidgets/QGraphicsScene>
+#include <QtWidgets/QAbstractItemView>
 #include <QtCore/QTimer>
 
 namespace WebCore {
@@ -69,6 +71,11 @@ void QtFallbackWebPopup::show(const QWebSelectData& data)
     }
 
     m_combo->showPopupAtCursorPosition();
+
+    QGraphicsProxyWidget *comboProxy = m_combo->graphicsProxyWidget();
+    if (comboProxy && comboProxy->scene()) {
+        comboProxy->scene()->setActivePanel(m_combo->view()->window()->graphicsProxyWidget());
+    }
 }
 
 void QtFallbackWebPopup::hide()
