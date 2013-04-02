@@ -25,7 +25,7 @@
 #include <CFNumber.h>
 #include <CGLContext.h>
 #include <CGLCurrent.h>
-#include <CGLIOSurface.h>
+#include <OpenGL/CGLIOSurface.h>
 #include <IOSurface/IOSurface.h>
 #include <OpenGL/OpenGL.h>
 #include <OpenGL/gl.h>
